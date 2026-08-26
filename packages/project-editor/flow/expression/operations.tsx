@@ -1,7 +1,7 @@
-import React from "react";
-
-import { objectClone, objectEqual } from "eez-studio-shared/util";
 import * as os from "os";
+import React from "react";
+import { toJS } from "mobx";
+import { cloneDeep, isEqual } from "lodash-es";
 import { FLOW_ITERATOR_INDEXES_VARIABLE } from "project-editor/features/variable/defs";
 import type { ValueType } from "project-editor/features/variable/value-type";
 import type { IExpressionContext } from "project-editor/flow/expression";
@@ -1297,20 +1297,20 @@ export const builtInFunctions: {
         eval: (
             expressionContext: IExpressionContext | undefined,
             ...args: any[]
-        ) => objectClone(args[0]),
+        ) => cloneDeep(toJS(args[0])),
         getValueType: (...args: ValueType[]) => {
             return args[0];
         }
     },
 
-    "Array.deepEqual": {
+    "Array.isEqual": {
         operationIndex: 93,
         arity: 2,
         args: ["arrayVar1", "arrayVar2"],
         eval: (
             expressionContext: IExpressionContext | undefined,
             ...args: any[]
-        ) => objectEqual(args[0], args[1]),
+        ) => isEqual(toJS(args[0]), toJS(args[1])),
         getValueType: (...args: ValueType[]) => {
             return "boolean";
         }
@@ -1323,20 +1323,20 @@ export const builtInFunctions: {
         eval: (
             expressionContext: IExpressionContext | undefined,
             ...args: any[]
-        ) => objectClone(args[0]),
+        ) => cloneDeep(toJS(args[0])),
         getValueType: (...args: ValueType[]) => {
             return args[0];
         }
     },
 
-    "Struct.deepEqual": {
+    "Struct.isEqual": {
         operationIndex: 95,
         arity: 2,
         args: ["structVar1", "structVar2"],
         eval: (
             expressionContext: IExpressionContext | undefined,
             ...args: any[]
-        ) => objectEqual(args[0], args[1]),
+        ) => isEqual(toJS(args[0]), toJS(args[1])),
         getValueType: (...args: ValueType[]) => {
             return "boolean";
         }
