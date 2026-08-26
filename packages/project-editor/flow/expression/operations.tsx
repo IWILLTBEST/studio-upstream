@@ -1,6 +1,6 @@
 import React from "react";
 
-import { objectClone } from "eez-studio-shared/util";
+import { objectClone, objectEqual } from "eez-studio-shared/util";
 import * as os from "os";
 import { FLOW_ITERATOR_INDEXES_VARIABLE } from "project-editor/features/variable/defs";
 import type { ValueType } from "project-editor/features/variable/value-type";
@@ -1293,13 +1293,26 @@ export const builtInFunctions: {
     "Array.clone": {
         operationIndex: 58,
         arity: 1,
-        args: ["array"],
+        args: ["arrayOrStruct"],
         eval: (
             expressionContext: IExpressionContext | undefined,
             ...args: any[]
         ) => objectClone(args[0]),
         getValueType: (...args: ValueType[]) => {
             return args[0];
+        }
+    },
+
+    "Array.deepEqual": {
+        operationIndex: 93,
+        arity: 2,
+        args: ["arrayOrStruct1", "arrayOrStruct2"],
+        eval: (
+            expressionContext: IExpressionContext | undefined,
+            ...args: any[]
+        ) => objectEqual(args[0], args[1]),
+        getValueType: (...args: ValueType[]) => {
+            return "boolean";
         }
     },
 

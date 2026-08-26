@@ -2,7 +2,7 @@ import path from "path";
 import type { Socket } from "net";
 import { action, observable, runInAction, makeObservable } from "mobx";
 import net from "net";
-import _ from "lodash";
+import _ from "lodash-es";
 
 import * as notification from "eez-studio-ui/notification";
 

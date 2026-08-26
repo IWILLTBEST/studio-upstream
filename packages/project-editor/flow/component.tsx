@@ -2,7 +2,7 @@ import { MenuItem } from "@electron/remote";
 import React from "react";
 import { observable, computed, makeObservable, runInAction } from "mobx";
 import classNames from "classnames";
-import { each } from "lodash";
+import { each } from "lodash-es";
 
 import { validators } from "eez-studio-shared/validation";
 import { BoundingRectBuilder, Point, Rect } from "eez-studio-shared/geometry";
