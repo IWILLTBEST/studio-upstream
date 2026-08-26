@@ -1293,7 +1293,7 @@ export const builtInFunctions: {
     "Array.clone": {
         operationIndex: 58,
         arity: 1,
-        args: ["arrayOrStruct"],
+        args: ["arrayVar"],
         eval: (
             expressionContext: IExpressionContext | undefined,
             ...args: any[]
@@ -1306,7 +1306,33 @@ export const builtInFunctions: {
     "Array.deepEqual": {
         operationIndex: 93,
         arity: 2,
-        args: ["arrayOrStruct1", "arrayOrStruct2"],
+        args: ["arrayVar1", "arrayVar2"],
+        eval: (
+            expressionContext: IExpressionContext | undefined,
+            ...args: any[]
+        ) => objectEqual(args[0], args[1]),
+        getValueType: (...args: ValueType[]) => {
+            return "boolean";
+        }
+    },
+
+    "Struct.clone": {
+        operationIndex: 94,
+        arity: 1,
+        args: ["structVar"],
+        eval: (
+            expressionContext: IExpressionContext | undefined,
+            ...args: any[]
+        ) => objectClone(args[0]),
+        getValueType: (...args: ValueType[]) => {
+            return args[0];
+        }
+    },
+
+    "Struct.deepEqual": {
+        operationIndex: 95,
+        arity: 2,
+        args: ["structVar1", "structVar2"],
         eval: (
             expressionContext: IExpressionContext | undefined,
             ...args: any[]
