@@ -8,7 +8,7 @@ import {
     IObservableValue
 } from "mobx";
 import { observer } from "mobx-react";
-import { map } from "lodash";
+import { map } from "lodash-es";
 
 import { humanize } from "eez-studio-shared/string";
 import { UNITS } from "eez-studio-shared/units";

@@ -1,5 +1,5 @@
 import { computed, observable, runInAction, makeObservable } from "mobx";
-import { range } from "lodash";
+import { range } from "lodash-es";
 
 import { UNITS } from "eez-studio-shared/units";
 

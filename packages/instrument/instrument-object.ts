@@ -8,7 +8,7 @@ import {
     makeObservable,
     IReactionDisposer
 } from "mobx";
-import { defer } from "lodash";
+import { defer } from "lodash-es";
 import type { Database } from "better-sqlite3";
 
 import {

@@ -62,7 +62,7 @@ import {
     type Page
 } from "project-editor/features/page/page";
 import { Project } from "project-editor/project/project";
-import { isArray } from "lodash";
+import { isArray } from "lodash-es";
 import type { ConnectionLine } from "project-editor/flow/connection-line";
 import {
     getInputDisplayName,

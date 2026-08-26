@@ -1,5 +1,5 @@
 import { computed, makeObservable, runInAction } from "mobx";
-import { intersection } from "lodash";
+import { intersection } from "lodash-es";
 import { MenuItem } from "@electron/remote";
 
 import { type Point, type Rect } from "eez-studio-shared/geometry";

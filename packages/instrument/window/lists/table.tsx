@@ -9,7 +9,7 @@ import {
 } from "mobx";
 import { observer } from "mobx-react";
 import classNames from "classnames";
-import { range } from "lodash";
+import { range } from "lodash-es";
 
 import { objectClone } from "eez-studio-shared/util";
 import { addAlphaToColor } from "eez-studio-shared/color";

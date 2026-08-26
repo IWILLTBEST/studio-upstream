@@ -1,7 +1,7 @@
 import fs from "fs";
 import { computed, makeObservable } from "mobx";
 import { observable, extendObservable, action, toJS, runInAction } from "mobx";
-import { each } from "lodash";
+import { each } from "lodash-es";
 
 import * as notification from "eez-studio-ui/notification";
 import { IEezObject, LVGLParts } from "project-editor/core/object";

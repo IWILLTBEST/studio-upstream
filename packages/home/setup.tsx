@@ -8,7 +8,7 @@ import {
 } from "mobx";
 import { observer } from "mobx-react";
 import classNames from "classnames";
-import { uniqBy } from "lodash";
+import { uniqBy } from "lodash-es";
 
 import { IExtension } from "eez-studio-shared/extensions/extension";
 import {

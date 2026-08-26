@@ -37,10 +37,7 @@
         "pubdoc-dev": "cd tools/pubdoc && tsc && cd build && node pubdoc.js --config ../config/dev.json",
         "pubdoc-prod": "cd tools/pubdoc && tsc && cd build && node pubdoc.js --config ../config/prod.json",
         "npm-module-publish": "node npm-module-publish.js",
-        "generate-license-file": "npx generate-license-file",
-        "madge-circular": "madge --circular packages/home/main.tsx > circular.txt",
-        "madge-graph": "madge --image source-graph.svg packages/home/main.tsx",
-        "madge-graph-circular": "madge --circular --image source-graph-circular.svg packages/home/main.tsx"
+        "generate-license-file": "npx generate-license-file"
     },
     "prettier": {
         "printWidth": 80,
@@ -65,7 +62,7 @@
         "@types/jquery": "3.5.32",
         "@types/jsdom": "21.1.7",
         "@types/json-stable-stringify": "1.1.0",
-        "@types/lodash": "4.17.13",
+        "@types/lodash-es": "^4.17.12",
         "@types/luxon": "3.4.2",
         "@types/marked": "5.0.2",
         "@types/mousetrap": "1.6.15",
@@ -94,7 +91,6 @@
         "json-to-pretty-yaml": "1.2.2",
         "less": "3.13.1",
         "less-plugin-clean-css": "1.6.0",
-        "madge": "5.0.2",
         "pump": "3.0.2",
         "run-script-os": "1.1.6",
         "typescript": "7.0.2",
@@ -131,7 +127,7 @@
         "json-stable-stringify": "1.1.1",
         "jspanel4": "4.16.1",
         "koffi": "2.9.2",
-        "lodash": "4.18.1",
+        "lodash-es": "^4.18.1",
         "luxon": "3.5.0",
         "lv_font_conv": "github:lvgl/lv_font_conv",
         "marked": "5.1.2",

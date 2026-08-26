@@ -8,7 +8,7 @@ import {
     runInAction
 } from "mobx";
 import classNames from "classnames";
-import { uniqBy } from "lodash";
+import { uniqBy } from "lodash-es";
 
 import { IExtension } from "eez-studio-shared/extensions/extension";
 import {

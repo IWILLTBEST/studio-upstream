@@ -3,7 +3,7 @@ import { MenuItem } from "@electron/remote";
 import React from "react";
 import { observable, computed, makeObservable, toJS, runInAction } from "mobx";
 import { observer } from "mobx-react";
-import { range } from "lodash";
+import { range } from "lodash-es";
 import * as FlexLayout from "flexlayout-react";
 
 import { Button } from "eez-studio-ui/button";
