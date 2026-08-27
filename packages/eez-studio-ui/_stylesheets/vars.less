@@ -1,23 +1,27 @@
+// Cool grey ramp (hue 220) and primary blue ramp (hue 207) — every neutral
+// and accent-blue value below is drawn from these two families so borders,
+// panels, hovers and selection states read as one coherent palette instead
+// of independently-picked greys.
 @backgroundColor: var(--bs-body-bg);
 @textColor: var(--bs-body-color);
-@sectionBackgroundColor: #f0f0f0;
-@borderColor: #e2e2e2;
-@darkBorderColor: #c5c5c5;
+@sectionBackgroundColor: hsl(220, 20%, 95%);
+@borderColor: hsl(220, 14%, 90%);
+@darkBorderColor: hsl(220, 10%, 78%);
 @panelHeaderColor: var(--bs-tertiary-bg);
-@selectionBackgroundColor: #337bb7;
+@selectionBackgroundColor: hsl(207, 56%, 46%);
 @selectionColor: white;
-@lightSelectionBackgroundColor: #93bde0;
+@lightSelectionBackgroundColor: hsl(207, 60%, 72%);
 @lightSelectionColor: white;
-@tableBorderColor: #e0e0e0;
-@nonFocusedSelectionBackgroundColor: #c5c5c5;
+@tableBorderColor: hsl(220, 14%, 89%);
+@nonFocusedSelectionBackgroundColor: hsl(220, 10%, 78%);
 @nonFocusedSelectionColor: black;
-@hoverBackgroundColor: #c5c5c5;
+@hoverBackgroundColor: hsl(220, 10%, 78%);
 @hoverColor: black;
-@scrollTrackColor: #f1f1f1;
-@scrollThumbColor: #c1c1c1;
-@darkTextColor: #555;
-@focusBackgroundColor: #4e94d1;
-@focusColor: #444;
+@scrollTrackColor: hsl(220, 20%, 95%);
+@scrollThumbColor: hsl(220, 8%, 76%);
+@darkTextColor: hsl(220, 8%, 35%);
+@focusBackgroundColor: hsl(207, 58%, 58%);
+@focusColor: hsl(220, 10%, 27%);
 @dragSourceBackgroundColor: #e040fb;
 @dragSourceColor: white;
 @dropTargetBackgroundColor: #7c4dff;
@@ -47,8 +51,8 @@
 @splitterHoverColor: @borderColor;
 @splitterSize: 8px;
 
-@panelBorderColor: #e7eaec;
-@buttonColor: #444;
+@panelBorderColor: @borderColor;
+@buttonColor: @focusColor;
 
 @BB3_StartPageGridGap: 40px;
 
@@ -91,7 +95,18 @@
 
 @debuggerPanelLogItemScpi: blue;
 
-@componentShadow: 1px 1px 4px rgba(22, 33, 74, 0.2);
+// Five-step shadow/elevation scale — pick by how far off the surface an
+// element sits (barely-raised control -> dropdown -> popover -> panel ->
+// modal), never by eyeballing a one-off box-shadow.
+@shadowElevation1: 0 1px 3px hsla(220, 30%, 10%, 0.16);
+@shadowElevation2: 0 4px 6px hsla(220, 30%, 10%, 0.16);
+@shadowElevation3: 0 5px 15px hsla(220, 30%, 10%, 0.18);
+@shadowElevation4: 0 10px 24px hsla(220, 30%, 10%, 0.18);
+@shadowElevation5: 0 15px 35px hsla(220, 30%, 10%, 0.22);
+
+@borderRadiusSmall: 4px;
+
+@componentShadow: @shadowElevation1;
 @componentBodyShadow: none;
 
 @panelHeaderColorInsideFlexLayout: var(--bs-tertiary-bg);
@@ -110,4 +125,4 @@
 @tipBoxBackgroundColor: #e6f6e6;
 @tipBoxBorderColor: #c3e6c3;
 
-@modalDialogDropdownShadow: 4px 4px 16px rgba(64, 64, 64, 0.5);
+@modalDialogDropdownShadow: @shadowElevation5;

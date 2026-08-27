@@ -271,8 +271,8 @@ input::placeholder {
 }
 
 .EezStudio_Loader {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #666;
+    border: 4px solid @borderColor;
+    border-top: 4px solid @darkTextColor;
     border-radius: 50%;
     margin: auto;
     animation: spin 2s linear infinite;
@@ -328,7 +328,7 @@ input::placeholder {
         white-space: normal;
         overflow-wrap: break-word;
         border: 1px solid @borderColor;
-        border-radius: 3px;
+        border-radius: @borderRadiusSmall;
         padding: 4px 8px;
         max-width: 200px;
     }
@@ -823,8 +823,8 @@ button.EezStudio_Action {
 
                 padding: 10px;
                 background-color: @backgroundColor;
-                border-radius: 4px;
-                box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+                border-radius: @borderRadiusSmall;
+                box-shadow: @shadowElevation2;
             }
 
             &.open > div {
@@ -1094,7 +1094,7 @@ button.EezStudio_Action {
         display: flex;
         white-space: nowrap;
         position: relative;
-        border-radius: 3px;
+        border-radius: @borderRadiusSmall;
 
         &.drag-source {
             background-color: @dragSourceBackgroundColor;

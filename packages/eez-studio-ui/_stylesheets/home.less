@@ -99,12 +99,11 @@
             border-radius: 18px;
             padding: 5px 10px;
             font-size: 120%;
-            /*
-                box-shadow: 0 2px 5px 1px @borderColor;
-                &:hover {
-                    box-shadow: 0 2px 8px 1px @borderColor;
-                }
-                */
+            box-shadow: @shadowElevation1;
+            transition: box-shadow 0.15s ease-out;
+            &:hover {
+                box-shadow: @shadowElevation2;
+            }
         }
     }
 
@@ -150,6 +149,8 @@
             max-width: 720px;
 
             padding: 0;
+
+            box-shadow: @shadowElevation1;
 
             .EezStudio_List {
                 padding: 10px;
@@ -252,12 +253,11 @@
         border-radius: 18px;
         padding: 5px 10px;
         font-size: 120%;
-        /*
-        box-shadow: 0 2px 5px 1px @borderColor;
+        box-shadow: @shadowElevation1;
+        transition: box-shadow 0.15s ease-out;
         &:hover {
-            box-shadow: 0 2px 8px 1px @borderColor;
+            box-shadow: @shadowElevation2;
         }
-        */
     }
 
     .EezStudio_NewProjectWizard_Body {
@@ -542,12 +542,11 @@
             border-radius: 18px;
             padding: 5px 10px;
             font-size: 120%;
-            /*
-            box-shadow: 0 2px 5px 1px @borderColor;
+            box-shadow: @shadowElevation1;
+            transition: box-shadow 0.15s ease-out;
             &:hover {
-                box-shadow: 0 2px 8px 1px @borderColor;
+                box-shadow: @shadowElevation2;
             }
-            */
         }
 
         .EezStudio_ToolbarHeader {
@@ -585,6 +584,7 @@
         & > div {
             border: 1px solid @borderColor;
             border-radius: 10px;
+            box-shadow: @shadowElevation1;
             margin: 10px;
             &:last-child {
                 margin-left: 0;
@@ -811,12 +811,11 @@
         border-radius: 18px;
         padding: 5px 10px;
         font-size: 120%;
-        /*
-        box-shadow: 0 2px 5px 1px @borderColor;
+        box-shadow: @shadowElevation1;
+        transition: box-shadow 0.15s ease-out;
         &:hover {
-            box-shadow: 0 2px 8px 1px @borderColor;
+            box-shadow: @shadowElevation2;
         }
-        */
     }
 
     .EezStudio_ExtensionsManager_Body {
@@ -842,6 +841,7 @@
             box-sizing: border-box;
             border: 1px solid @borderColor;
             border-radius: 10px;
+            box-shadow: @shadowElevation1;
             padding: 10px;
             overflow-y: auto;
             overflow-x: hidden;

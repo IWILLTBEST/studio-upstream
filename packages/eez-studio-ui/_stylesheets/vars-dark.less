@@ -1,23 +1,26 @@
+// Same cool grey (hue 220) / primary blue (hue 207) families as vars.less,
+// re-sampled at the lightness levels a dark surface needs — this keeps the
+// two themes visibly related instead of two unrelated ad hoc palettes.
 @backgroundColor: var(--bs-body-bg);
 @textColor: var(--bs-body-color);
-@sectionBackgroundColor: #555555;
-@borderColor: #444444;
-@darkBorderColor: #404040;
+@sectionBackgroundColor: hsl(220, 12%, 33%);
+@borderColor: hsl(220, 12%, 27%);
+@darkBorderColor: hsl(220, 12%, 24%);
 @panelHeaderColor: var(--bs-tertiary-bg);
-@selectionBackgroundColor: #3682c1;
-@selectionColor: #e1e1e1;
-@lightSelectionBackgroundColor: #93bde0;
-@lightSelectionColor: #e1e1e1;
-@tableBorderColor: #444444;
-@nonFocusedSelectionBackgroundColor: #666;
-@nonFocusedSelectionColor: #eee;
-@hoverBackgroundColor: #666;
-@hoverColor: #e1e1e1;
-@scrollTrackColor: #f1f1f1;
-@scrollThumbColor: #c1c1c1;
-@darkTextColor: #ddd;
-@focusBackgroundColor: #4e94d1;
-@focusColor: #444;
+@selectionBackgroundColor: hsl(207, 56%, 46%);
+@selectionColor: hsl(220, 15%, 89%);
+@lightSelectionBackgroundColor: hsl(207, 60%, 72%);
+@lightSelectionColor: hsl(220, 15%, 89%);
+@tableBorderColor: hsl(220, 12%, 27%);
+@nonFocusedSelectionBackgroundColor: hsl(220, 8%, 40%);
+@nonFocusedSelectionColor: hsl(220, 20%, 93%);
+@hoverBackgroundColor: hsl(220, 8%, 40%);
+@hoverColor: hsl(220, 15%, 89%);
+@scrollTrackColor: hsl(220, 20%, 95%);
+@scrollThumbColor: hsl(220, 8%, 76%);
+@darkTextColor: hsl(220, 15%, 87%);
+@focusBackgroundColor: hsl(207, 58%, 58%);
+@focusColor: hsl(220, 10%, 27%);
 @dragSourceBackgroundColor: #e040fb;
 @dragSourceColor: white;
 @dropTargetBackgroundColor: #7c4dff;
@@ -47,8 +50,8 @@
 @splitterHoverColor: @borderColor;
 @splitterSize: 8px;
 
-@panelBorderColor: #444444;
-@buttonColor: #444;
+@panelBorderColor: @borderColor;
+@buttonColor: @focusColor;
 
 @BB3_StartPageGridGap: 40px;
 
@@ -95,7 +98,17 @@
 
 @debuggerPanelLogItemScpi: lightblue;
 
-@componentShadow: 2px 2px 8px rgb(0, 0, 0, 0.5);
+// Same five-step scale as vars.less, darker and more opaque so elevation
+// still reads against a dark surface.
+@shadowElevation1: 0 1px 3px hsla(220, 40%, 1%, 0.45);
+@shadowElevation2: 0 4px 6px hsla(220, 40%, 1%, 0.45);
+@shadowElevation3: 0 5px 15px hsla(220, 40%, 1%, 0.5);
+@shadowElevation4: 0 10px 24px hsla(220, 40%, 1%, 0.5);
+@shadowElevation5: 0 15px 35px hsla(220, 40%, 1%, 0.6);
+
+@borderRadiusSmall: 4px;
+
+@componentShadow: @shadowElevation1;
 @componentBodyShadow: none;
 
 @panelHeaderColorInsideFlexLayout: rgba(var(--bs-tertiary-bg-rgb), 1);
@@ -114,4 +127,4 @@
 @tipBoxBackgroundColor: #003100;
 @tipBoxBorderColor: #009400;
 
-@modalDialogDropdownShadow: 4px 4px 24px rgba(0, 0, 0, 0.8);
+@modalDialogDropdownShadow: @shadowElevation5;
