@@ -124,8 +124,22 @@ async function loadExtension(
     return undefined;
 }
 
+export type FromProcess = "main" | "renderer";
+
+// Which process is loading extensions. Both the main process (main/setup.ts)
+// and the renderer (home/main.tsx) load the installed extensions;
+// initExtension uses this to tell them apart. Renderer is the default so
+// existing entry points keep their current behavior.
+let fromProcess: FromProcess = "renderer";
+
+export function setExtensionsFromProcess(value: FromProcess) {
+    fromProcess = value;
+}
+
 export function registerExtension(extension: IExtension) {
-    if (extension.init) {
+    if (extension.initExtension) {
+        extension.initExtension({ fromProcess });
+    } else if (extension.init) {
         extension.init();
     }
 

@@ -167,6 +167,16 @@ export interface IExtensionDefinition {
     init?: () => void;
     destroy?: () => void;
 
+    /**
+     * Process-aware initialization. Extensions are loaded in both the main
+     * process (main/setup.ts) and the renderer process (home/main.tsx);
+     * `fromProcess` tells which one is initializing. Use this instead of
+     * `init` when the extension needs to hook both processes (e.g. start a
+     * local server in main, register IPC handlers in renderer). When defined,
+     * it replaces `init`.
+     */
+    initExtension?: (params: { fromProcess: "main" | "renderer" }) => void;
+
     loadExtension?: (
         extensionFolderPath: string
     ) => Promise<IExtension | undefined>;
