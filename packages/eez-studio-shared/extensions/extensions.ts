@@ -138,10 +138,8 @@ export function setExtensionsFromProcess(value: FromProcess) {
 }
 
 export function registerExtension(extension: IExtension) {
-    if (extension.initExtension) {
-        extension.initExtension({ fromProcess });
-    } else if (extension.init) {
-        extension.init();
+    if (extension.init) {
+        extension.init({ fromProcess });
     }
 
     action(() => extensions.set(extension.id, extension))();

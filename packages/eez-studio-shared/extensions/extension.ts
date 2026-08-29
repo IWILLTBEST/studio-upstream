@@ -175,20 +175,16 @@ export interface IExtensionDefinition {
     preInstalled: boolean;
     extensionType: ExtensionType;
 
-    init?: () => void;
-    destroy?: () => void;
-
     /**
-     * Process-aware initialization: the extension receives an API object from
-     * Studio. Extensions are loaded in both the main process (main/setup.ts)
-     * and the renderer process (home/main.tsx); `api.fromProcess` tells which
-     * one is initializing. Use this instead of `init` when the extension
-     * needs to hook both processes (e.g. start a local server in main,
-     * register IPC handlers in renderer). When defined, it replaces `init`.
-     * The API surface is expected to grow (ipc helpers, handler registration
-     * etc.) — see issue #1042.
+     * Called when the extension is registered, in both the main process
+     * (main/setup.ts) and the renderer process (home/main.tsx). Extensions
+     * that need to hook both processes can read `api.fromProcess` to tell
+     * which one is initializing (e.g. start a local server in main, register
+     * IPC handlers in renderer). Extensions that don't use the parameter are
+     * unaffected. The API surface is expected to grow — see issue #1042.
      */
-    initExtension?: (api: IExtensionApi) => void;
+    init?: (api: IExtensionApi) => void;
+    destroy?: () => void;
 
     loadExtension?: (
         extensionFolderPath: string
