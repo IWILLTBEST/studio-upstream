@@ -167,40 +167,50 @@ export interface IOpenProjectInfo {
 }
 
 /**
- * API object passed to IExtensionDefinition.initExtension.
+ * API object passed to IExtensionDefinition.init. Only the field matching
+ * the current process is populated — `main` when initializing in the main
+ * process, `renderer` when initializing in the renderer process — so an
+ * extension can tell which process it's running in by checking which of
+ * the two is present.
  */
 export interface IExtensionApi {
-    /**
-     * Which process is initializing the extension: "main" (main/setup.ts) or
-     * "renderer" (home/main.tsx).
-     */
-    fromProcess: "main" | "renderer";
+    main?: {
+        /**
+         * API calls available to the extension when running inside the main process.
+         */
+    };
 
-    /**
-     * Renderer only: require a third-party module (e.g. "mobx") by name, for
-     * runtime-loaded extensions which cannot resolve node packages through
-     * node module resolution. Only modules explicitly registered by the host
-     * via setExtensionApiModules are available; anything else throws.
-     * Studio-own modules are NOT exposed this way — they don't have a stable
-     * API; the parts extensions need are exported as explicit members below
-     * instead, so each addition is visible and reviewed.
-     */
-    requireModule?(name: string): any;
+    renderer?: {
+        /**
+         * API calls available to the extension when running inside the renderer process.
+         */
 
-    /**
-     * Renderer only: the list of open projects, one entry per project editor
-     * tab. Best-effort export: it tracks Studio internals and may change
-     * between releases — extensions should feature-detect.
-     */
-    getOpenProjects?(): IOpenProjectInfo[];
+        /**
+         * Require a third-party module (e.g. "mobx") by name, for
+         * runtime-loaded extensions which cannot resolve node packages through
+         * node module resolution. Only modules explicitly registered by the host
+         * via setExtensionApiModules are available; anything else throws.
+         * Studio-own modules are NOT exposed this way — they don't have a stable
+         * API; the parts extensions need are exported as explicit members below
+         * instead, so each addition is visible and reviewed.
+         */
+        requireModule?(name: string): any;
 
-    /**
-     * Renderer only: the ProjectStore of the currently selected project
-     * editor tab, or undefined when no project editor is open. Best-effort
-     * export: it tracks Studio internals (project-editor/store) and may
-     * change between releases — extensions should feature-detect.
-     */
-    getActiveProjectStore?(): any;
+        /**
+         * The list of open projects, one entry per project editor
+         * tab. Best-effort export: it tracks Studio internals and may change
+         * between releases — extensions should feature-detect.
+         */
+        getOpenProjects?(): IOpenProjectInfo[];
+
+        /**
+         * The ProjectStore of the currently selected project
+         * editor tab, or undefined when no project editor is open. Best-effort
+         * export: it tracks Studio internals (project-editor/store) and may
+         * change between releases — extensions should feature-detect.
+         */
+        getActiveProjectStore?(): any;
+    }
 }
 
 export type ExtensionType =

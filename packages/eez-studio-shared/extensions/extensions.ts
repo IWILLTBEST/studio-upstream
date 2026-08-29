@@ -11,7 +11,8 @@ import {
     readJsObjectFromFile,
     removeFolder,
     renameFile,
-    readFolder
+    readFolder,
+    isRenderer
 } from "eez-studio-shared/util-electron";
 import { guid } from "eez-studio-shared/guid";
 import { firstWord } from "eez-studio-shared/string";
@@ -61,9 +62,9 @@ async function loadExtension(
                     if (mainScript) {
                         // this is measurement functions extension
                         extensionType = "measurement-functions";
-                        extension = require(extensionFolderPath +
-                            "/" +
-                            mainScript).default;
+                        extension = require(
+                            extensionFolderPath + "/" + mainScript
+                        ).default;
                     } else if (
                         packageJsonEezStudio[CONF_NODE_MODULE_PROPERTY_NAME]
                     ) {
@@ -125,64 +126,54 @@ async function loadExtension(
     return undefined;
 }
 
-export type FromProcess = IExtensionApi["fromProcess"];
+let extensionApi: IExtensionApi | undefined;
 
-// Which process is loading extensions. Both the main process (main/setup.ts)
-// and the renderer (home/main.tsx) load the installed extensions;
-// initExtension uses this to tell them apart. Renderer is the default so
-// existing entry points keep their current behavior.
-let fromProcess: FromProcess = "renderer";
+function getExtensionApi(): IExtensionApi {
+    if (!extensionApi) {
+        if (isRenderer()) {
+            const { tabs, ProjectEditorTab } =
+                require("home/tabs-store") as typeof import("home/tabs-store");
 
-export function setExtensionsFromProcess(value: FromProcess) {
-    fromProcess = value;
-}
+            extensionApi = {
+                renderer: {
+                    requireModule: (name: string) => {
+                        if (name == "mobx") {
+                            return require("mobx");
+                        } else {
+                            throw new Error(
+                                `module not exported to extensions: ${name}`
+                            );
+                        }
+                    },
+                    getOpenProjects: () =>
+                        tabs.tabs
+                            .filter(tab => tab instanceof ProjectEditorTab)
+                            .map(tab => ({
+                                name: path.basename(tab.filePath ?? ""),
+                                filePath: tab.filePath,
+                                active: tab === tabs.activeTab
+                            })),
+                    getActiveProjectStore: () =>
+                        tabs.activeTab instanceof ProjectEditorTab
+                            ? tabs.activeTab.projectStore
+                            : undefined
+                }   
+            };
+        } else {
+            extensionApi = {
+                main: {}
+            };
+        }
+        
+        console.log(extensionApi);
+    }
 
-// Third-party modules the host explicitly exports to renderer-side
-// extensions (see IExtensionApi.requireModule). Registered by the renderer
-// entry point before loadExtensions.
-let apiModules: { [name: string]: any } | undefined;
-
-export function setExtensionApiModules(modules: { [name: string]: any }) {
-    apiModules = modules;
-}
-
-// Implementations of the renderer-only IExtensionApi members that export
-// Studio internals (getOpenProjects, getActiveProjectStore, ...). Registered
-// by the renderer entry point (home/main.tsx) before loadExtensions, so each
-// piece of Studio handed to extensions is defined in one reviewable place.
-let rendererApiMembers:
-    | Partial<
-          Pick<IExtensionApi, "getOpenProjects" | "getActiveProjectStore">
-      >
-    | undefined;
-
-export function setExtensionApiRendererMembers(
-    members: NonNullable<typeof rendererApiMembers>
-) {
-    rendererApiMembers = members;
+    return extensionApi;
 }
 
 export function registerExtension(extension: IExtension) {
     if (extension.init) {
-        const api: IExtensionApi = { fromProcess };
-        if (fromProcess === "renderer") {
-            if (apiModules) {
-                api.requireModule = (name: string) => {
-                    if (
-                        !Object.prototype.hasOwnProperty.call(apiModules!, name)
-                    ) {
-                        throw new Error(
-                            `module not exported to extensions: ${name}`
-                        );
-                    }
-                    return apiModules![name];
-                };
-            }
-            if (rendererApiMembers) {
-                Object.assign(api, rendererApiMembers);
-            }
-        }
-        extension.init(api);
+        extension.init(getExtensionApi());
     }
 
     action(() => extensions.set(extension.id, extension))();
