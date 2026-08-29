@@ -1,5 +1,6 @@
 /// <reference path="./globals.d.ts"/>
 import "bootstrap";
+import path from "path";
 import { ipcRenderer } from "electron";
 import React from "react";
 import { createRoot } from "react-dom/client";
@@ -8,7 +9,8 @@ import { observer } from "mobx-react";
 
 import {
     loadExtensions,
-    setExtensionApiModules
+    setExtensionApiModules,
+    setExtensionApiRendererMembers
 } from "eez-studio-shared/extensions/extensions";
 import { getNodeModuleFolders } from "eez-studio-shared/extensions/yarn";
 
@@ -172,13 +174,29 @@ async function main() {
         nodeModuleFolders = [];
     }
 
-    // Modules explicitly exported to renderer-side extensions
-    // (api.requireModule). Extend this list as extensions need more.
+    // Third-party modules exported to renderer-side extensions
+    // (api.requireModule). Studio-own modules are deliberately NOT on this
+    // list: they have no stable API, so the parts extensions need are
+    // exported as explicit IExtensionApi members below instead.
     setExtensionApiModules({
-        mobx: require("mobx"),
-        "project-editor/store": require("project-editor/store"),
-        "project-editor/core/object": require("project-editor/core/object"),
-        "home/tabs-store": require("home/tabs-store")
+        mobx: require("mobx")
+    });
+
+    // Studio internals exported to renderer-side extensions, one explicit
+    // member per reviewed addition (see IExtensionApi). Extend through PRs.
+    setExtensionApiRendererMembers({
+        getOpenProjects: () =>
+            tabs.tabs
+                .filter(tab => tab instanceof ProjectEditorTab)
+                .map(tab => ({
+                    name: path.basename(tab.filePath ?? ""),
+                    filePath: tab.filePath,
+                    active: tab === tabs.activeTab
+                })),
+        getActiveProjectStore: () =>
+            tabs.activeTab instanceof ProjectEditorTab
+                ? tabs.activeTab.projectStore
+                : undefined
     });
 
     await loadExtensions(nodeModuleFolders);

@@ -155,6 +155,18 @@ export interface IExtensionHost {
 }
 
 /**
+ * One entry of the open-projects list (see IExtensionApi.getOpenProjects).
+ */
+export interface IOpenProjectInfo {
+    /** File base name of the .eez-project file. */
+    name: string;
+    /** Absolute path of the .eez-project file. */
+    filePath: string | undefined;
+    /** Whether this project's editor tab is the currently selected one. */
+    active: boolean;
+}
+
+/**
  * API object passed to IExtensionDefinition.initExtension.
  */
 export interface IExtensionApi {
@@ -165,13 +177,30 @@ export interface IExtensionApi {
     fromProcess: "main" | "renderer";
 
     /**
-     * Renderer only: access explicitly exported Studio modules by name
-     * (e.g. "project-editor/store"). The module must be whitelisted by the
-     * host via setExtensionApiModules; unknown names throw. This is how
-     * runtime-loaded extensions (which cannot resolve Studio packages
-     * through node module resolution) reach editor internals.
+     * Renderer only: require a third-party module (e.g. "mobx") by name, for
+     * runtime-loaded extensions which cannot resolve node packages through
+     * node module resolution. Only modules explicitly registered by the host
+     * via setExtensionApiModules are available; anything else throws.
+     * Studio-own modules are NOT exposed this way — they don't have a stable
+     * API; the parts extensions need are exported as explicit members below
+     * instead, so each addition is visible and reviewed.
      */
     requireModule?(name: string): any;
+
+    /**
+     * Renderer only: the list of open projects, one entry per project editor
+     * tab. Best-effort export: it tracks Studio internals and may change
+     * between releases — extensions should feature-detect.
+     */
+    getOpenProjects?(): IOpenProjectInfo[];
+
+    /**
+     * Renderer only: the ProjectStore of the currently selected project
+     * editor tab, or undefined when no project editor is open. Best-effort
+     * export: it tracks Studio internals (project-editor/store) and may
+     * change between releases — extensions should feature-detect.
+     */
+    getActiveProjectStore?(): any;
 }
 
 export type ExtensionType =
