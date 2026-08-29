@@ -21,7 +21,8 @@ import { registerSource, sendMessage, watch } from "eez-studio-shared/notify";
 import {
     IExtension,
     IExtensionProperties,
-    ExtensionType
+    ExtensionType,
+    IExtensionApi
 } from "eez-studio-shared/extensions/extension";
 
 import {
@@ -124,9 +125,21 @@ async function loadExtension(
     return undefined;
 }
 
+export type FromProcess = IExtensionApi["fromProcess"];
+
+// Which process is loading extensions. Both the main process (main/setup.ts)
+// and the renderer (home/main.tsx) load the installed extensions;
+// initExtension uses this to tell them apart. Renderer is the default so
+// existing entry points keep their current behavior.
+let fromProcess: FromProcess = "renderer";
+
+export function setExtensionsFromProcess(value: FromProcess) {
+    fromProcess = value;
+}
+
 export function registerExtension(extension: IExtension) {
     if (extension.init) {
-        extension.init();
+        extension.init({ fromProcess });
     }
 
     action(() => extensions.set(extension.id, extension))();
