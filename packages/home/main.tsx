@@ -6,7 +6,10 @@ import { createRoot } from "react-dom/client";
 import { configure } from "mobx";
 import { observer } from "mobx-react";
 
-import { loadExtensions } from "eez-studio-shared/extensions/extensions";
+import {
+    loadExtensions,
+    setExtensionApiModules
+} from "eez-studio-shared/extensions/extensions";
 import { getNodeModuleFolders } from "eez-studio-shared/extensions/yarn";
 
 import * as notification from "eez-studio-ui/notification";
@@ -168,6 +171,15 @@ async function main() {
         console.info(`Failed to get node module folders.`);
         nodeModuleFolders = [];
     }
+
+    // Modules explicitly exported to renderer-side extensions
+    // (api.requireModule). Extend this list as extensions need more.
+    setExtensionApiModules({
+        mobx: require("mobx"),
+        "project-editor/store": require("project-editor/store"),
+        "project-editor/core/object": require("project-editor/core/object"),
+        "home/tabs-store": require("home/tabs-store")
+    });
 
     await loadExtensions(nodeModuleFolders);
 

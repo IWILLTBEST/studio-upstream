@@ -137,9 +137,29 @@ export function setExtensionsFromProcess(value: FromProcess) {
     fromProcess = value;
 }
 
+// Modules the host explicitly exports to renderer-side extensions
+// (see IExtensionApi.requireModule). Registered by the renderer entry
+// point before loadExtensions.
+let apiModules: { [name: string]: any } | undefined;
+
+export function setExtensionApiModules(modules: { [name: string]: any }) {
+    apiModules = modules;
+}
+
 export function registerExtension(extension: IExtension) {
     if (extension.init) {
-        extension.init({ fromProcess });
+        const api: IExtensionApi = { fromProcess };
+        if (apiModules && fromProcess === "renderer") {
+            api.requireModule = (name: string) => {
+                if (!Object.prototype.hasOwnProperty.call(apiModules!, name)) {
+                    throw new Error(
+                        `module not exported to extensions: ${name}`
+                    );
+                }
+                return apiModules![name];
+            };
+        }
+        extension.init(api);
     }
 
     action(() => extensions.set(extension.id, extension))();

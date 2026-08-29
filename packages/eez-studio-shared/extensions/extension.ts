@@ -163,6 +163,15 @@ export interface IExtensionApi {
      * "renderer" (home/main.tsx).
      */
     fromProcess: "main" | "renderer";
+
+    /**
+     * Renderer only: access explicitly exported Studio modules by name
+     * (e.g. "project-editor/store"). The module must be whitelisted by the
+     * host via setExtensionApiModules; unknown names throw. This is how
+     * runtime-loaded extensions (which cannot resolve Studio packages
+     * through node module resolution) reach editor internals.
+     */
+    requireModule?(name: string): any;
 }
 
 export type ExtensionType =
