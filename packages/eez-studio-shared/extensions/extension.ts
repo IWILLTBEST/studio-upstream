@@ -154,6 +154,17 @@ export interface IExtensionHost {
     activeTab: IHomeTab;
 }
 
+/**
+ * API object passed to IExtensionDefinition.initExtension.
+ */
+export interface IExtensionApi {
+    /**
+     * Which process is initializing the extension: "main" (main/setup.ts) or
+     * "renderer" (home/main.tsx).
+     */
+    fromProcess: "main" | "renderer";
+}
+
 export type ExtensionType =
     | "built-in"
     | "iext"
@@ -168,14 +179,16 @@ export interface IExtensionDefinition {
     destroy?: () => void;
 
     /**
-     * Process-aware initialization. Extensions are loaded in both the main
-     * process (main/setup.ts) and the renderer process (home/main.tsx);
-     * `fromProcess` tells which one is initializing. Use this instead of
-     * `init` when the extension needs to hook both processes (e.g. start a
-     * local server in main, register IPC handlers in renderer). When defined,
-     * it replaces `init`.
+     * Process-aware initialization: the extension receives an API object from
+     * Studio. Extensions are loaded in both the main process (main/setup.ts)
+     * and the renderer process (home/main.tsx); `api.fromProcess` tells which
+     * one is initializing. Use this instead of `init` when the extension
+     * needs to hook both processes (e.g. start a local server in main,
+     * register IPC handlers in renderer). When defined, it replaces `init`.
+     * The API surface is expected to grow (ipc helpers, handler registration
+     * etc.) — see issue #1042.
      */
-    initExtension?: (params: { fromProcess: "main" | "renderer" }) => void;
+    initExtension?: (api: IExtensionApi) => void;
 
     loadExtension?: (
         extensionFolderPath: string

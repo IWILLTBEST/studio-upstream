@@ -21,7 +21,8 @@ import { registerSource, sendMessage, watch } from "eez-studio-shared/notify";
 import {
     IExtension,
     IExtensionProperties,
-    ExtensionType
+    ExtensionType,
+    IExtensionApi
 } from "eez-studio-shared/extensions/extension";
 
 import {
@@ -124,7 +125,7 @@ async function loadExtension(
     return undefined;
 }
 
-export type FromProcess = "main" | "renderer";
+export type FromProcess = IExtensionApi["fromProcess"];
 
 // Which process is loading extensions. Both the main process (main/setup.ts)
 // and the renderer (home/main.tsx) load the installed extensions;
