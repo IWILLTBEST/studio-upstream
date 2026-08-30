@@ -131,9 +131,6 @@ let extensionApi: IExtensionApi | undefined;
 function getExtensionApi(): IExtensionApi {
     if (!extensionApi) {
         if (isRenderer()) {
-            const { tabs, ProjectEditorTab } =
-                require("home/tabs-store") as typeof import("home/tabs-store");
-
             extensionApi = {
                 renderer: {
                     requireModule: (name: string) => {
@@ -145,27 +142,36 @@ function getExtensionApi(): IExtensionApi {
                             );
                         }
                     },
-                    getOpenProjects: () =>
-                        tabs.tabs
+                    // The tabs-store singleton is created lazily by loadTabs()
+                    // (after loadExtensions), so the module has to be required
+                    // inside the calls — capturing its exports at
+                    // extension-registration time would freeze `tabs` at
+                    // undefined.
+                    getOpenProjects: () => {
+                        const { tabs, ProjectEditorTab } =
+                            require("home/tabs-store") as typeof import("home/tabs-store");
+                        return tabs.tabs
                             .filter(tab => tab instanceof ProjectEditorTab)
                             .map(tab => ({
                                 name: path.basename(tab.filePath ?? ""),
                                 filePath: tab.filePath,
                                 active: tab === tabs.activeTab
-                            })),
-                    getActiveProjectStore: () =>
-                        tabs.activeTab instanceof ProjectEditorTab
+                            }));
+                    },
+                    getActiveProjectStore: () => {
+                        const { tabs, ProjectEditorTab } =
+                            require("home/tabs-store") as typeof import("home/tabs-store");
+                        return tabs.activeTab instanceof ProjectEditorTab
                             ? tabs.activeTab.projectStore
-                            : undefined
-                }   
+                            : undefined;
+                    }
+                }
             };
         } else {
             extensionApi = {
                 main: {}
             };
         }
-        
-        console.log(extensionApi);
     }
 
     return extensionApi;
