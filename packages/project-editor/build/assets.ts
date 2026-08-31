@@ -180,6 +180,10 @@ export class Assets {
         [componentType: number]: string;
     } = {};
 
+    // text ids used in T"..." expressions, collected during the flow build
+    // (LVGL only), emitted in screens.c for "lv_i18n extract"
+    lvglTranslatedTextIds = new Set<string>();
+
     isUsingCrypyoSha256: boolean = false;
 
     lvglBuild: LVGLBuild;
