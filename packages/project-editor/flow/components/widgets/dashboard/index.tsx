@@ -296,6 +296,10 @@ registerClass("RectangleDashboardWidget", RectangleDashboardWidget);
 
 ////////////////////////////////////////////////////////////////////////////////
 
+class TextInputWidgetExecutionState {
+    focus?: () => void;
+}
+
 const TextInputWidgetInput = observer(
     class TextInputWidgetInput extends React.Component<{
         value: string;
@@ -316,6 +320,22 @@ const TextInputWidgetInput = observer(
             makeObservable(this, {
                 inputValue: observable
             });
+        }
+
+        componentDidMount() {
+            if (this.props.flowContext.flowState && this.inputElement.current) {
+                this.inputElement.current.focus();
+            }
+
+            let executionState =
+                this.props.flowContext.flowState?.getComponentExecutionState<TextInputWidgetExecutionState>(
+                    this.props.textInputWidget
+                );
+            if (executionState) {
+                executionState.focus = () => {
+                    this.inputElement.current?.focus();
+                };
+            }
         }
 
         handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -495,6 +515,18 @@ export class TextInputWidget extends Widget {
                 code: 2,
                 paramExpressionType: `struct:${TEXT_INPUT_CHANGE_EVENT_STRUCT_NAME}`,
                 oldName: "onChange"
+            }
+        },
+
+        execute: (context: IDashboardComponentContext) => {
+            Widget.classInfo.execute!(context);
+
+            let executionState =
+                context.getComponentExecutionState<TextInputWidgetExecutionState>();
+            if (!executionState) {
+                context.setComponentExecutionState<TextInputWidgetExecutionState>(
+                    new TextInputWidgetExecutionState()
+                );
             }
         }
     });
