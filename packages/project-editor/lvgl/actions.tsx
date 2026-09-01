@@ -1606,6 +1606,13 @@ export class LVGLActionComponent extends ActionComponent {
                 ) {
                     actionJs.useStack = true;
                     actionJs.useStackType = "literal";
+                } else if (actionJs.action.startsWith("anim")) {
+                    if (actionJs.repeatCount == undefined) {
+                        actionJs.repeatCount = 0;
+                    }
+                    if (actionJs.playback == undefined) {
+                        actionJs.playback = false;
+                    }
                 }
             }
         },
