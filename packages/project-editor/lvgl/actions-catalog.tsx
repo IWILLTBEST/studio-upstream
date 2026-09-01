@@ -1825,6 +1825,18 @@ const ANIM_PROPERTIES: IActionPropertyDefinition[] = [
         name: "path",
         type: `enum:${LV_ANIM_PATH_ENUM_NAME}`,
         helpText: "The animation path"
+    },
+    {
+        name: "repeatCount",
+        type: "integer",
+        helpText:
+            "How many times to repeat the animation after the first run: 0 = play once, -1 = repeat forever"
+    },
+    {
+        name: "playback",
+        type: "boolean",
+        helpText:
+            "If checked the animation plays in reverse when the forward run finishes (ping-pong), using the same duration"
     }
 ];
 
@@ -1835,11 +1847,13 @@ const ANIM_DEFAULTS = {
     time: 1000,
     relative: true,
     instant: false,
-    path: "LINEAR"
+    path: "LINEAR",
+    repeatCount: 0,
+    playback: false
 };
 
 const animLabel = (
-    [object, start, end, delay, time, relative, instant, path]: string[],
+    [object, start, end, delay, time, relative, instant, path, repeatCount, playback]: string[],
     [
         _1,
         startLabel,
@@ -1848,7 +1862,9 @@ const animLabel = (
         timeLabel,
         relativeLabel,
         instantLabel,
-        _2
+        _2,
+        _3,
+        _4
     ]: string[]
 ) => (
     <>
@@ -1856,6 +1872,8 @@ const animLabel = (
         <i>{delayLabel}</i>={delay} <i>{timeLabel}</i>={time}
         {relative == "ON" ? " RELATIVE" : ""}
         {instant == "ON" ? " INSTANT" : ""} {path}
+        {repeatCount == "-1" ? " ∞" : repeatCount != "0" ? ` x${Number(repeatCount) + 1}` : ""}
+        {playback == "ON" ? " PING-PONG" : ""}
     </>
 );
 
