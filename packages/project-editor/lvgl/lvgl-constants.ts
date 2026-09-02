@@ -727,6 +727,12 @@ export const ROLLER_MODES = {
     INFINITE: 1
 };
 
+// lv_chart_axis_t
+export const LV_CHART_AXIS = {
+    PRIMARY_Y: 0,
+    SECONDARY_Y: 1
+};
+
 // lv_bar_mode_t
 export const BAR_MODES = {
     NORMAL: 0,
@@ -863,6 +869,9 @@ export const LVGL_CONSTANTS_ALL = {
     LV_BAR_MODE_NORMAL: 0,
     LV_BAR_MODE_SYMMETRICAL: 1,
     LV_BAR_MODE_RANGE: 2,
+
+    LV_CHART_AXIS_PRIMARY_Y: 0,
+    LV_CHART_AXIS_SECONDARY_Y: 1,
 
     LV_COLORWHEEL_MODE_HUE: 0,
     LV_COLORWHEEL_MODE_SATURATION: 1,
