@@ -329,7 +329,9 @@ export class LVGLChartWidget extends LVGLWidget {
                     // line, never exported into the generated source code
                     if (code.pageRuntime && code.pageRuntime.isEditor) {
                         code.callObjectFunction(
-                            "lv_chart_set_all_value",
+                            code.isLVGLVersion(["8.4.0", "9.2.2"])
+                                ? "lv_chart_set_all_value"
+                                : "lv_chart_set_all_values",
                             seriesObj,
                             series.previewValue
                         );
