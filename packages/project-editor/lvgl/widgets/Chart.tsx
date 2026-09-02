@@ -35,6 +35,7 @@ export class LVGLChartSeries extends EezObject {
     axis: keyof typeof LV_CHART_AXIS;
     rangeMin: number;
     rangeMax: number;
+    previewValue: number;
 
     static classInfo: ClassInfo = {
         properties: [
@@ -77,6 +78,14 @@ export class LVGLChartSeries extends EezObject {
                 displayName: "Range max",
                 type: PropertyType.Number,
                 isOptional: true
+            },
+            {
+                name: "previewValue",
+                displayName: "Preview value",
+                type: PropertyType.Number,
+                isOptional: true,
+                formText:
+                    "Used only inside the editor: the series is drawn as a horizontal line at this value, so colors and ranges can be previewed. It is not exported into the generated source code."
             }
         ],
 
@@ -141,7 +150,8 @@ export class LVGLChartSeries extends EezObject {
             color: observable,
             axis: observable,
             rangeMin: observable,
-            rangeMax: observable
+            rangeMax: observable,
+            previewValue: observable
         });
     }
 
@@ -304,17 +314,29 @@ export class LVGLChartWidget extends LVGLWidget {
                 series.color,
                 () => seriesVar,
                 (color, seriesVar) => {
-                    const seriesObj = code.callObjectFunctionWithAssignment(
-                        "lv_chart_series_t *",
-                        `ser${i}`,
-                        "lv_chart_add_series",
-                        code.color(color),
-                        code.constant(`LV_CHART_AXIS_${series.axis}`)
-                    );
+                const seriesObj = code.callObjectFunctionWithAssignment(
+                    "lv_chart_series_t *",
+                    `ser${i}`,
+                    "lv_chart_add_series",
+                    code.color(color),
+                    code.constant(`LV_CHART_AXIS_${series.axis}`)
+                );
 
-                    code.assingToStateVar(seriesVar, seriesObj);
+                code.assingToStateVar(seriesVar, seriesObj);
 
-                    if (
+                if (series.previewValue != undefined) {
+                    // editor-only preview: draw the series as a horizontal
+                    // line, never exported into the generated source code
+                    if (code.pageRuntime && code.pageRuntime.isEditor) {
+                        code.callObjectFunction(
+                            "lv_chart_set_all_value",
+                            seriesObj,
+                            series.previewValue
+                        );
+                    }
+                }
+
+                if (
                         series.rangeMin != undefined &&
                         series.rangeMax != undefined
                     ) {
