@@ -1,30 +1,131 @@
 import React from "react";
-import { makeObservable } from "mobx";
+import { makeObservable, observable } from "mobx";
 
-import { makeDerivedClassInfo } from "project-editor/core/object";
+import {
+    ClassInfo,
+    EezObject,
+    IMessage,
+    MessageType,
+    PropertyType,
+    getParent,
+    makeDerivedClassInfo
+} from "project-editor/core/object";
 
 import { ProjectType } from "project-editor/project/project";
 
+import { specificGroup } from "project-editor/ui-components/PropertyGrid/groups";
+
 import { LVGLWidget } from "./internal";
+import { LVGLPropertyType } from "../expression-property";
+import { getChildOfObject, Message } from "project-editor/store";
 import type { LVGLCode } from "project-editor/lvgl/to-lvgl-code";
 
 ////////////////////////////////////////////////////////////////////////////////
 
+export class LVGLListEntry extends EezObject {
+    text: string;
+    textType: LVGLPropertyType;
+    icon: string;
+
+    static classInfo: ClassInfo = {
+        properties: [
+            {
+                name: "text",
+                type: PropertyType.String
+            },
+            {
+                name: "icon",
+                type: PropertyType.ObjectReference,
+                referencedObjectCollectionPath: "bitmaps",
+                isOptional: true
+            }
+        ],
+
+        listLabel: (entry: LVGLListEntry, collapsed: boolean) => {
+            const entryIndex = (getParent(entry) as LVGLListEntry[]).indexOf(
+                entry
+            );
+
+            if (collapsed) {
+                return (
+                    <>
+                        <span style={{ fontWeight: "bold", marginRight: 10 }}>
+                            #{entryIndex}
+                        </span>
+                        <span>{entry.text ?? ""}</span>
+                    </>
+                );
+            }
+
+            return <span style={{ fontWeight: "bold" }}>#{entryIndex}</span>;
+        },
+
+        defaultValue: {
+            text: "Item",
+            textType: "literal"
+        },
+
+        check: (entry: LVGLListEntry, messages: IMessage[]) => {
+            if (!entry.text) {
+                messages.push(
+                    new Message(
+                        MessageType.ERROR,
+                        `Text is empty`,
+                        getChildOfObject(entry, "text")
+                    )
+                );
+            }
+        }
+    };
+
+    override makeEditable() {
+        super.makeEditable();
+
+        makeObservable(this, {
+            text: observable,
+            textType: observable,
+            icon: observable
+        });
+    }
+}
+
 export class LVGLListWidget extends LVGLWidget {
+    entries: LVGLListEntry[];
+
     static classInfo = makeDerivedClassInfo(LVGLWidget.classInfo, {
         enabledInComponentPalette: (projectType: ProjectType) =>
             projectType === ProjectType.LVGL,
 
         componentPaletteGroupName: "!1Basic",
 
-        properties: [],
+        properties: [
+            {
+                name: "entries",
+                type: PropertyType.Array,
+                typeClass: LVGLListEntry,
+                propertyGridGroup: specificGroup,
+                partOfNavigation: false,
+                enumerable: false,
+                defaultValue: [],
+                showArrayCollapsedByDefaultInPropertyGrid: true,
+                hideElementIndexInPropertyGrid: true
+            }
+        ],
 
         defaultValue: {
             left: 0,
             top: 0,
             width: 180,
             height: 100,
-            clickableFlag: true
+            clickableFlag: true,
+            entries: [
+                Object.assign({}, LVGLListEntry.classInfo.defaultValue, {
+                    text: "Item 1"
+                }),
+                Object.assign({}, LVGLListEntry.classInfo.defaultValue, {
+                    text: "Item 2"
+                })
+            ]
         },
 
         icon: (
@@ -46,10 +147,26 @@ export class LVGLListWidget extends LVGLWidget {
     override makeEditable() {
         super.makeEditable();
 
-        makeObservable(this, {});
+        makeObservable(this, {
+            entries: observable
+        });
     }
 
     override toLVGLCode(code: LVGLCode) {
         code.createObject("lv_list_create");
+
+        const addEntryFunctionName = code.isV9
+            ? "lv_list_add_button"
+            : "lv_list_add_btn";
+
+        for (const entry of this.entries ?? []) {
+            if (entry.text) {
+                code.callObjectFunction(
+                    addEntryFunctionName,
+                    entry.icon ? code.image(entry.icon) : code.constant("NULL"),
+                    code.stringProperty(entry.textType ?? "literal", entry.text)
+                );
+            }
+        }
     }
 }
